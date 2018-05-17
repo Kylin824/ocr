@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true"/>
+    <constant name="struts.multipart.maxSize" value="10000000"/>
+    <constant name="struts.multipart.saveDir" value="/tmp"/>
+    <constant name="struts.custom.i18n.resources" value="struts" />
+    <!--<constant name="struts.i18n.encoding" value="UTF-8" />-->
+    <!--<constant name="struts.enable.DynamicMethodInvocation" value="true" />-->
+
+    <package name="test" extends="struts-default" namespace="/">
+
+        <action name="login" class="login.LoginAction" method="login">
+            <result name="success">/LoginOK.jsp</result>
+            <result name="error">/LoginError.jsp</result>
+        </action>
+
+        <action name="regist" class="login.LoginAction" method="regist">
+            <result name="success">/index.jsp</result>
+            <result name="error">/LoginError.jsp</result>
+        </action>
+
+
+        <action name="imgUpload" class="Image.ImageAction" method="Upload">
+
+            <interceptor-ref name="defaultStack"/>
+            <interceptor-ref name="fileUpload">
+                <param name="allowedTypes">image/jpeg,image/jpg,image/gif</param>
+            </interceptor-ref>
+
+            <!--<result name="success">/ImageOK.jsp</result>-->
+            <!--<result name="success" type="redirectAction">getJson</result>-->
+            <result name="success" type="chain">ocrJson</result>
+            <result name="error">/imgError.jsp</result>
+        </action>
+
+        <action name="imgSynchro" class="Image.ImageAction" method="Synchro">
+            <result name="success">/index.jsp</result>
+            <result name="error">/imgError.jsp</result>
+        </action>
+
+    </package>
+
+    <package name="testJson" namespace="/" extends="json-default">
+        <action name="ocrJson" class="json.JsonAction" method="getOcrJson">
+            <result type="json">
+                <!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+                <param name="root">jsonData</param>     <!-- 这里的jsonData对应action里要返回的map对象 -->
+            </result>
+        </action>
+
+        <action name="testJson" class="json.JsonAction" method="testJson">
+            <result type="json">
+                <!-- 这里指定将被Struts2序列化的属性，该属性在action中必须有对应的getter方法 -->
+                <param name="root">jsonData</param>     <!-- 这里的jsonData对应action里要返回的map对象 -->
+            </result>
+        </action>
+    </package>
+
+</struts>
